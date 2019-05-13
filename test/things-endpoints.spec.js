@@ -124,6 +124,23 @@ describe('Things Endpoints', function() {
           .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
           .expect(200, expectedThing)
       })
+
+
+      it(`responds 401 'Unauthorized request' when invalid password`, () => {
+        const userInvalidPass = { user_name: testUsers[0], password: 'wrong' }
+        return supertest(app)
+          .get(`/api/things/1`)
+          .set('Authorization', helpers.makeAuthHeader(userInvalidPass))
+          .expect(401, { error: `Unauthorized request` })
+      })
+
+      it(`responds 401 'Unauthorized request' when invalid user`, () => {
+        const userInvalidPass = { user_name: 'user-not', password: 'existy' }
+        return supertest(app)
+          .get(`/api/things/1`)
+          .set('Authorization', helpers.makeAuthHeader(userInvalidPass))
+          .expect(401, { error: `Unauthorized request` })
+      })
     })
 
     context(`Given an XSS attack thing`, () => {
