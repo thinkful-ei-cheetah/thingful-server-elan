@@ -251,27 +251,16 @@ function seedThingsTables(db, users, things, reviews=[]) {
   return db.transaction(async trx => {
     await seedUsers(trx, users)
     await trx.into('thingful_things').insert(things)
+    await trx.into('thingful_reviews').insert(reviews)
     await trx.raw(
-      `SELECT setval('thingful_things_id_seq', ?`,
-      [things[things.id -1].id]
+      `SELECT setval('thingful_things_id_seq', ?)`,
+      [things[things.length -1].id],
     )
   })
-    // .into('thingful_users')
-    // .insert(users)
-    // .then(() =>
-    //   db
-    //     .into('thingful_things')
-    //     .insert(things)
-    // )
-    // .then(() =>
-    //   reviews.length && db.into('thingful_reviews').insert(reviews)
-    // )
 }
 
 function seedMaliciousThing(db, user, thing) {
   return seedUsers(db, [user])
-    // .into('thingful_users')
-    // .insert([user])
     .then(() =>
       db
         .into('thingful_things')
