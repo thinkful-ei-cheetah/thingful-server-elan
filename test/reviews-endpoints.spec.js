@@ -33,23 +33,7 @@ describe('Reviews Endpoints', function() {
       )
     )
 
-    it(`responds 401 'Unauthorized request' when invalid password`, () => {
-      const userInvalidPass = { user_name: testUsers[0], password: 'wrong' }
-      return supertest(app)
-        .post(`/api/reviews`)
-        .set('Authorization', helpers.makeAuthHeader(userInvalidPass))
-        .expect(401, { error: `Unauthorized request` })
-    })
-
-    it(`responds 401 'Unauthorized request' when invalid user`, () => {
-      const userInvalidPass = { user_name: 'user-not', password: 'existy' }
-      return supertest(app)
-        .post(`/api/reviews`)
-        .set('Authorization', helpers.makeAuthHeader(userInvalidPass))
-        .expect(401, { error: `Unauthorized request` })
-    })
-
-    it(`creates an review, responding with 201 and the new review`, function() {
+    it(`creates a review, responding with 201 and the new review`, function() {
       this.retries(3)
       const testThing = testThings[0]
       const testUser = testUsers[0]
@@ -95,6 +79,8 @@ describe('Reviews Endpoints', function() {
     const requiredFields = ['text', 'rating', 'thing_id']
 
     requiredFields.forEach(field => {
+      const testUser = testUsers[0]
+      console.log(testUser)
       const testThing = testThings[0]
       const newReview = {
         text: 'Test new review',
@@ -106,7 +92,7 @@ describe('Reviews Endpoints', function() {
         delete newReview[field]
         return supertest(app)
           .post('/api/reviews')
-          .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
+          .set('Authorization', helpers.makeAuthHeader(testUser))
           .send(newReview)
           .expect(400, {
             error: `Missing '${field}' in request body`,
